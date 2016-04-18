@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title> Chat Custom </title>
+    <link href="../../Content/chat2.css" rel="stylesheet" />
+
+    <script src="../../Scripts/jquery-2.2.3.min.js"></script>
+    <script src="../../Scripts/jquery-ui-1.11.4.min.js"></script>
+    <script src="../../Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="../../signalr/hubs"></script> <!-- script autogenerati hub SignalR -->
+</head>
+<body>
+    <div id="div_chat">
+        <span id="span_titolo">Chat</span>
+        <span id="span_autore"> Posting As: <input id="text_autore" type="text" onkeydown="if (event.keyCode == 13) { return false;}" /></span>
+        <br />
+        <div id="div_text"></div>
+        <input id="text_input" type="text" onkeydown="if (event.keyCode == 13) { SendMsg(); return false;}" />
+        <input id="button_send" type="button" value="Send" onclick="SendMsg();" />
+        <br />
+        <span id="span_clientConnessi">Client Connessi: 0</span>
+    </div>
+
+    <script type="text/javascript">
+        var chat;
+        $(function () {
+            chat = $.connection.chat2Hub;
+
+            chat.client.OnUpdate_ClientConnessi = function (i) {
+                $("#span_clientConnessi").text("Client Connessi: " + i);
+            };
+
+            chat.client.OnMsgReceived = function (msg, autore, data) {
+                var author = autore;
+                if (autore == "")
+                    author = "Anonimo";
+
+                var nuovoDiv = "<div class='div_messaggio'>"
+                               + "<span class='span_autore'>" + author + "</span>"
+                               + "<span class='span_data'>" + data + "</span>"
+                               + "<span class='span_testo'>" + msg + "</span>"
+                               + "</div>";
+
+                $("#div_text").append(nuovoDiv);
+
+                var divvone = document.getElementById("div_text");
+                divvone.scrollTop = divvone.scrollHeight;
+            };
+
+            // Start the connection.
+            $.connection.hub.start();
+        });
+
+        function SendMsg() {
+            var testo = document.getElementById("text_input").value;
+            var autore = document.getElementById("text_autore").value;
+            if (testo != "") {
+                chat.invoke("SendMsg", testo, autore);
+                document.getElementById("text_input").value = "";
+            }
+        }
+
+        $(document).ready(function () {
+            //se è supportato il WebStorage salvo la posizione e carico l'ultima caricata
+            if (typeof (Storage) !== "undefined") {
+                if (localStorage.pos_chat_left && localStorage.pos_chat_top) {
+                    $("#div_chat").css({
+                        position: "absolute",
+                        "top": Number(localStorage.pos_chat_top),
+                        "left": Number(localStorage.pos_chat_left)
+                    });
+
+                }
+            }
+            $("#div_chat").draggable({
+                stop: function (event, ui) {
+                    if (typeof (Storage) !== "undefined") {
+                        var position = $("#div_chat").offset();
+                        localStorage.pos_chat_left = position.left;
+                        localStorage.pos_chat_top = position.top;
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

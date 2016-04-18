@@ -1,0 +1,66 @@
+﻿body {
+    background-color: aqua;
+}
+
+#div_chat {
+    float:right;
+    margin-top:40px;
+    margin-right:40px;
+    background-color:orange;
+}
+
+    #div_chat #span_titolo {
+        clear:both;
+        font-weight:bold;
+    }
+    #div_chat #span_autore {
+        float:right;
+    }
+    
+    #div_chat #span_clientConnessi {
+        font-weight:bold;
+    }
+    
+    #div_chat #div_text {
+        clear:both;
+        height: 220px;
+        width: 475px;
+        overflow-y: scroll;
+        background-color: whitesmoke;
+    }
+    
+    #div_chat #text_input {
+        width: 362px;
+        height:20px;
+        margin: 5px;
+    }
+    
+    #div_chat #button_send {
+        width:90px;
+        height:30px;
+        margin:3px;
+    }
+
+
+.div_messaggio {
+    border-style:solid;
+    border-width:1px;
+    border-color:black;
+    height:40px;
+}
+    .div_messaggio .span_autore {
+        float:left;
+        margin-top: -14px;
+        background-color: aqua;
+        padding: 3px;
+    }
+    .div_messaggio .span_data {
+        float:right;
+        margin-top: -14px;
+        background-color: aqua;
+        padding: 3px;
+    }
+    .div_messaggio .span_testo {
+        display:block;
+        margin-top:10px;
+    }

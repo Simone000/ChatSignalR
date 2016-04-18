@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SignalR MoveShape Demo</title>
+    <link href="../../Content/tetris.css" rel="stylesheet" />
+
+    <script src="../../Scripts/jquery-2.2.3.min.js"></script>
+    <script src="../../Scripts/jquery-ui-1.11.4.min.js"></script>
+    <script src="../../Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="../../signalr/hubs"></script> <!-- script autogenerati hub SignalR -->
+</head>
+<body>
+    <div id="shape" />
+
+   
+    <script>
+        $(function () {
+            var moveShapeHub = $.connection.tetrisHub,
+            $shape = $("#shape"),
+            shapeModel = {
+                left: 0,
+                top: 0
+            };
+            moveShapeHub.client.updateShape = function (model) {
+                shapeModel = model;
+                $shape.css({ left: model.left, top: model.top });
+            };
+            $.connection.hub.start().done(function () {
+                $shape.draggable({
+                    drag: function () {
+                        shapeModel = $shape.offset();
+                        moveShapeHub.server.updateModel(shapeModel);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
